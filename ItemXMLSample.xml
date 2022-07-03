@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Items>
+  <Item No.="1000">
+    <Description>Table</Description>
+    <Inventory>14</Inventory>
+  </Item>
+  <Item No.="1001">
+    <Description>Chair</Description>
+    <Inventory>0</Inventory>
+  </Item>
+  <Item No.="1002">
+    <Description>Lamp</Description>
+    <Inventory>0</Inventory>
+  </Item>
+  <Item No.="1003">
+    <Description>Desk</Description>
+    <Inventory>5</Inventory>
+  </Item>
+  <Item No.="1004">
+    <Description>Laptop</Description>
+    <Inventory>3</Inventory>
+  </Item>
+</Items>

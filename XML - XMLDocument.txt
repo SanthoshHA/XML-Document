@@ -1,0 +1,77 @@
+    local procedure CreateRequestXML() RequestBody: Text
+    var
+        XMLDomMgt: Codeunit "XML DOM Management";
+        XMLDoc: XmlDocument;
+        XMLDec: XmlDeclaration;
+        InvElement: XmlElement;
+        InventoryNode, InventoryListNode, HeaderNode, RecordsNode, RecordNode, DummyNode : XmlElement;
+        i: Integer;
+    begin
+        XmlDoc := XmlDocument.Create();
+        XmlDec := XmlDeclaration.Create('1.0', 'utf-8', 'yes');
+        XmlDoc.SetDeclaration(XmlDec);
+        InventoryNode := XmlElement.Create('inventory', Namespace);
+        XmlDoc.Add(InventoryNode);
+
+        InventoryListNode := XmlElement.Create('inventory-list', Namespace);
+        InventoryNode.Add(InventoryListNode);
+
+        HeaderNode := XmlElement.Create('header', Namespace);
+        HeaderNode.Add(XmlAttribute.Create('list-id', 'inventory_Azadea'));
+        InventoryListNode.Add(HeaderNode);
+        AddXmlDataElement('default-instock', 'OrderStatuses[1]', Namespace, HeaderNode);
+        AddXmlDataElement('description', 'OrderStatuses[2]', Namespace, HeaderNode);
+        AddXmlDataElement('use-bundle-inventory-only', 'OrderStatuses[2]', Namespace, HeaderNode);
+        AddXmlDataElement('on-order', 'Status', Namespace, HeaderNode);
+
+        RecordsNode := XmlElement.Create('records', Namespace);
+        InventoryListNode.Add(RecordsNode);
+
+        for i := 1 to 2 do begin
+            RecordNode := XmlElement.Create('record', Namespace);
+            RecordNode.Add(XmlAttribute.Create('prodcut-id', '123'));
+            RecordsNode.Add(RecordNode);
+            AddXmlDataElement('allocation', 'allocation', Namespace, RecordNode);
+            AddXmlDataElement('perpetual', 'allocation', Namespace, RecordNode);
+            AddXmlDataElement('preorder-backorder-handling', 'allocation', Namespace, RecordNode);
+            AddXmlDataElement('preorder-backorder-allocation', 'allocation', Namespace, RecordNode);
+        end;
+
+        XMLDoc.WriteTo(RequestBody);
+    end;
+
+    local procedure AddXmlDataElement(pElementName: Text; pElementValue: Text; pNamespace: Text; var pAddToXmlElement: XmlElement)
+    var
+        lDataElement: XmlElement;
+    begin
+        lDataElement := XmlElement.Create(pElementName, pNamespace);
+        lDataElement.Add(XmlText.Create(pElementValue));
+        pAddToXmlElement.Add(lDataElement);
+    end;
+	
+	'<?xml version="1.0" encoding="UTF-8"?>
+
+<inventory xmlns="http://www.demandware.com/xml/impex/order/2006-10-31">
+  <inventory-list>
+    <header list-id="inventory_Azadea">
+      <default-instock>VendorName</default-instock>
+      <description>ShippingCode</description>
+      <use-bundle-inventory-only>FulfillmentOrderNo</use-bundle-inventory-only>
+      <on-order>Status</on-order>
+    </header>
+    <records>
+      <record product-id="product-id">
+        <allocation>1</allocation>
+        <perpetual>SKU</perpetual>
+        <preorder-backorder-handling>123</preorder-backorder-handling>
+        <preorder-backorder-allocation />
+      </record>
+      <record product-id="product-id">
+        <allocation>2</allocation>
+        <perpetual>SKU</perpetual>
+        <preorder-backorder-handling>123</preorder-backorder-handling>
+        <preorder-backorder-allocation />
+      </record>
+    </records>
+  </inventory-list>
+</inventory>'
